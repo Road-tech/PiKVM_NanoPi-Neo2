@@ -60,14 +60,14 @@ jobs:
         ./compile.sh build BOARD=nanopineo2 BRANCH=current BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy
         echo "::set-output name=status::success"
         cd  output/images
-        tar -Jcvf /tmp/nanopi_neo_image.tar.xz  *.img        
+        tar -Jcvf /tmp/nanopi_neo2_image.tar.xz  *.img        
 
     - name: Upload Armbian image
       uses: actions/upload-artifact@master
       if: steps.build.outputs.status == 'success'
       with:
         name: Nanopi_neo_image
-        path: /tmp/nanopi_neo_image.tar.xz
+        path: /tmp/nanopi_neo2_image.tar.xz
         
     - name: Generate release tag
       id: tag
@@ -83,4 +83,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
-        files: /tmp/nanopi_neo_image.tar.xz 
+        files: /tmp/nanopi_neo2_image.tar.xz 
