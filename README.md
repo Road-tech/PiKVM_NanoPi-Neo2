@@ -42,7 +42,7 @@
 ### 调整MSD分区
 查看分区信息：   
 ```
-fidsk -l
+fdisk -l
 ```  
 
 如图，我这里的TF卡名叫`/dev/mmcblk0`，装系统的主分区为`/dev/mmcblk0p1`,用来存放系统镜像的MSD分区为`/dev/mmcblk0p2`,下同。  
