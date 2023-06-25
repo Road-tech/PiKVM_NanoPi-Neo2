@@ -1,6 +1,6 @@
 # PiKVM_Prebuild_image_NanoPi-Neo2
 
-这是一个NanoPi Neo的预构建镜像，该镜像可以让Pikvm运行在NanoPi Neo2上。
+这是一个NanoPi Neo2的预构建镜像，该镜像可以让Pikvm运行在NanoPi Neo2上。
 
 [PiKVM](https://github.com/pikvm/pikvm)是一个基于树莓派的开源、低成本的IP-KVM系统。不同于向日葵、teamviewer、Todesk这类远程控制软件，他可以实现硬件层的远程控制管理各类设备。  
 
@@ -22,20 +22,43 @@
 
 ### 刷入镜像  
 前往[发布页](https://github.com/Road-tech/PiKVM_Prebuild_image_NanoPi-Neo2/releases)下载镜像，并用[Etcher](https://etcher.balena.io/)刷入镜像。  
-如果您不需要使用MSD功能，可直接开机并跳至->步骤[安装Pikvm](#安装Pikvm)，如果需要请留意下一步。  
 
-### 占用分区
-因为MSD需要单独的一个分区用于存放镜像文件，而系统第一次启动后会自动扩展分区占用完所有的TF卡空间。当分区扩展完后再压缩就很困难了，所以启动前先使用磁盘分区工具把剩余的空间占用好，避免Armbian的自动扩展。  
+### 占用分区(20230616更新)
+
+<details>
+  <summary>20230616更新--此步骤可跳过</summary>
+因为MSD需要单独的一个分区用于存放镜像文件，而系统第一次启动后会自动扩展分区占用完所有的TF卡空间。当分区扩展完后再压缩就很困难了，所以启动前先使用磁盘分区工具把剩余的空间占用好，避免Armbian的自动扩展。   
+    
 我在Windows下使用的是[DiskGenius](https://www.diskgenius.cn/)，镜像刷入TF后大概占用2.3G的样子,把剩余的空间设定为扩展就行了，然后激活主分区就行了。不用担心容量分配不合理，我们会在下一步调整。  
 
 ![占用分区](https://github.com/Road-tech/Road-blog-Figure/blob/main/PiKVM_Prebuild_image_NanoPi-Neo/PiKVM_Prebuild_image_NanoPi-Neo-04.png?raw=true)  
 ![占用分区](https://github.com/Road-tech/Road-blog-Figure/blob/main/PiKVM_Prebuild_image_NanoPi-Neo/PiKVM_Prebuild_image_NanoPi-Neo-05.png?raw=true)  
+</details>
 
-### 插电开机  
-第一次启动默认账户为`root`，密码为`1234`。进入系统后会让你设定新密码以及System command shell。  
-在让你设置新的用户账户时即可`Ctrl+C`退出。  
+### 插电开机（20230625更新）  
+第一次开机用时会比较长，请耐心等待。  
+第一次启动默认账户为`root`，密码为`1234`。进入系统后会完成PiKVM的安装。     
+等待显示PiKVM安装完成的提示，系统会让你设定新密码以及System command shell。接下来系统还会让你新增一个用户账户，这是可选项，你可按需设置新的用户账户或`Ctrl+C`退出。    
 
-![设置用户](https://github.com/Road-tech/Road-blog-Figure/blob/main/PiKVM_Prebuild_image_NanoPi-Neo/PiKVM_Prebuild_image_NanoPi-Neo-01.png?raw=true)  
+此时在浏览器访问Nanopi2的ip地址，如`https://192.168.8.197/`即可看到PiKVM的登录界面。     
+
+![设置用户](https://github.com/Road-tech/Road-blog-Figure/blob/main/PiKVM_Prebuild_image_NanoPi-Neo/PiKVM_Prebuild_image_NanoPi-Neo-12.png?raw=true)  
+
+### 安装Pikvm
+<details>
+  <summary>（20230625更新--此步骤可跳过）</summary>
+    
+cd到root用户的主目录下，可以看到有两个文件夹。`kvmd-armbian`目录存放PiKVM的安装脚本，`NanoHatOLED`目录存放了OLED的驱动脚本。    
+
+![安装PiKVM](https://github.com/Road-tech/Road-blog-Figure/blob/main/PiKVM_Prebuild_image_NanoPi-Neo/PiKVM_Prebuild_image_NanoPi-Neo-10.png?raw=true)  
+
+运行以下命令:    
+```
+cd kvmd-armbian && ./install.sh
+```
+这个安装程序分为两部分，第一部分将在完成后自动重启，然后需要你再次执行以上命令完成第二部分的安装。    
+
+</details>
 
 ### 调整MSD分区
 查看分区信息：   
@@ -65,18 +88,6 @@ resize2fs /dev/mmcblk0p1
 mkfs -t ext4 /dev/mmcblk0p2
 ```  
 
-### 安装Pikvm
-cd到root用户的主目录下，可以看到有两个文件夹。`kvmd-armbian`目录存放PiKVM的安装脚本，`NanoHatOLED`目录存放了OLED的驱动脚本。
-
-![占用分区](https://github.com/Road-tech/Road-blog-Figure/blob/main/PiKVM_Prebuild_image_NanoPi-Neo/PiKVM_Prebuild_image_NanoPi-Neo-10.png?raw=true)  
-
-执行安装脚本：  
-```
-cd kvmd-armbian && ./install.sh
-```
-
-安装分两部分，Part1安装完成后会自动重启一次，需再次执行以上命令完成Part2安装.  
-
 ### 挂载MSD分区
 编辑文件：  
 ```
@@ -105,7 +116,7 @@ vi /etc/kvmd/override.yaml
        type:  disabled
 ```
 
-重启PiKVM或者NanoPi NEO：      
+重启PiKVM或者NanoPi NEO2：      
 
 ```
 systemctl restart kvmd 或 reboot
