@@ -41,8 +41,8 @@
 等待显示PiKVM安装完成的提示，系统会让你设定新密码以及System command shell。    
 接下来系统还会让你新增一个用户账户，这是可选项，你可按需设置新的用户账户或`Ctrl+C`退出。    
 
-此时你可以在输入命令`kvmd -m`查看PiKVM运行情况。
-同时在浏览器访问Nanopi2的ip地址，如`https://192.168.8.197/`亦可看到PiKVM的登录界面， 账号密码皆为`admin`。 
+此时你可以在输入命令`kvmd -m`查看PiKVM运行情况。       
+同时在浏览器访问Nanopi2的ip地址，如`https://192.168.8.197/`亦可看到PiKVM的登录界面， 账号密码皆为`admin`。     
 
 ![设置用户](https://github.com/Road-tech/Road-blog-Figure/blob/main/PiKVM_Prebuild_image_NanoPi-Neo/PiKVM_Prebuild_image_NanoPi-Neo-12.png?raw=true)  
 
